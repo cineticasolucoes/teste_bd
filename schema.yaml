@@ -46,7 +46,7 @@ entities:
         length: 14
         nullable: true
         unique: true
-        description: CPF do usuário (formato: XXX.XXX.XXX-XX)
+        description: "CPF do usuário (formato: XXX.XXX.XXX-XX)"
       
       data_nascimento:
         type: date
