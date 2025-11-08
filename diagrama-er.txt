@@ -1,0 +1,122 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                    DIAGRAMA ER - SISTEMA E-COMMERCE                          ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────┐
+│      USUARIO        │
+├─────────────────────┤
+│ PK  id (UUID)       │
+│     nome            │
+│ UK  email           │
+│     senha_hash      │
+│ UK  cpf             │
+│     data_nascimento │
+│     ativo           │
+│     criado_em       │
+│     atualizado_em   │
+└─────────────────────┘
+          │
+          │ 1
+          │
+          │ N
+          ▼
+┌─────────────────────┐
+│     ENDERECO        │
+├─────────────────────┤
+│ PK  id (UUID)       │
+│ FK  usuario_id      │
+│     nome            │
+│     cep             │
+│     logradouro      │
+│     numero          │
+│     complemento     │
+│     bairro          │
+│     cidade          │
+│     estado          │
+│     padrao          │
+│     criado_em       │
+└─────────────────────┘
+          │
+          │ 1
+          │
+          │ N
+          ▼
+┌─────────────────────┐       1        ┌─────────────────────┐
+│      PEDIDO         │◄────────────────│     CATEGORIA       │
+├─────────────────────┤                 ├─────────────────────┤
+│ PK  id (UUID)       │                 │ PK  id (UUID)       │
+│ FK  usuario_id      │                 │ UK  nome            │
+│ FK  endereco_id     │                 │     descricao       │
+│ UK  numero_pedido   │                 │     ativa           │
+│     status          │                 │     criado_em       │
+│     subtotal        │                 └─────────────────────┘
+│     desconto        │                           │
+│     frete           │                           │ 1
+│     total           │                           │
+│     criado_em       │                           │ N
+│     atualizado_em   │                           ▼
+└─────────────────────┘                 ┌─────────────────────┐
+          │                             │      PRODUTO        │
+          │ 1                           ├─────────────────────┤
+          │                             │ PK  id (UUID)       │
+          │ N                           │ FK  categoria_id    │
+          ▼                             │     nome            │
+┌─────────────────────┐                 │ UK  slug            │
+│    ITEM_PEDIDO      │                 │     descricao       │
+├─────────────────────┤                 │     preco           │
+│ PK  id (UUID)       │                 │     estoque         │
+│ FK  pedido_id       │                 │     ativo           │
+│ FK  produto_id      │◄────N      1────│     criado_em       │
+│     quantidade      │                 │     atualizado_em   │
+│     preco_unitario  │                 └─────────────────────┘
+│     subtotal        │
+│     criado_em       │
+└─────────────────────┘
+
+
+LEGENDA:
+═══════════════════════════════════════════════════════════════════
+PK  = Primary Key (Chave Primária)
+FK  = Foreign Key (Chave Estrangeira)
+UK  = Unique Key (Chave Única)
+1   = Cardinalidade Um
+N   = Cardinalidade Muitos
+
+RELACIONAMENTOS:
+═══════════════════════════════════════════════════════════════════
+Usuario    (1) ───< (N)  Endereco        [Um usuário tem vários endereços]
+Usuario    (1) ───< (N)  Pedido          [Um usuário faz vários pedidos]
+Endereco   (1) ───< (N)  Pedido          [Um endereço pode ter vários pedidos]
+Categoria  (1) ───< (N)  Produto         [Uma categoria tem vários produtos]
+Pedido     (1) ───< (N)  ItemPedido      [Um pedido tem vários itens]
+Produto    (1) ───< (N)  ItemPedido      [Um produto está em vários pedidos]
+
+CONSTRAINTS E VALIDAÇÕES:
+═══════════════════════════════════════════════════════════════════
+✓ Email único por usuário
+✓ CPF único (quando informado)
+✓ Número de pedido único
+✓ Slug de produto único
+✓ Preços devem ser positivos
+✓ Estoque não pode ser negativo
+✓ Status do pedido tem valores específicos: 
+  [pendente, pago, separado, enviado, entregue, cancelado]
+✓ Quantidade de itens deve ser maior que zero
+✓ Deleção de usuário em cascata para endereços
+✓ Restrição de deleção para produtos em pedidos
+
+ÍNDICES PARA PERFORMANCE:
+═══════════════════════════════════════════════════════════════════
+✓ idx_usuario_email (email) - busca por login
+✓ idx_usuario_cpf (cpf) - busca por CPF
+✓ idx_endereco_usuario (usuario_id) - endereços do usuário
+✓ idx_produto_categoria (categoria_id) - produtos por categoria
+✓ idx_produto_ativo (ativo) - listar produtos ativos
+✓ idx_produto_slug (slug) - busca por URL
+✓ idx_pedido_usuario (usuario_id) - pedidos do usuário
+✓ idx_pedido_numero (numero_pedido) - busca por número
+✓ idx_pedido_status (status) - filtrar por status
+✓ idx_pedido_criado (criado_em) - ordenação cronológica
+✓ idx_item_pedido (pedido_id) - itens do pedido
+✓ idx_item_produto (produto_id) - onde produto foi vendido
+

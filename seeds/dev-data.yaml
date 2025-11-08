@@ -1,0 +1,162 @@
+# Dados de Seed para Desenvolvimento
+# Este arquivo contém dados de exemplo para popular o banco durante desenvolvimento
+
+# Categorias
+categorias:
+  - id: 550e8400-e29b-41d4-a716-446655440001
+    nome: Eletrônicos
+    descricao: Produtos eletrônicos diversos
+    ativa: true
+
+  - id: 550e8400-e29b-41d4-a716-446655440002
+    nome: Livros
+    descricao: Livros físicos e digitais
+    ativa: true
+
+  - id: 550e8400-e29b-41d4-a716-446655440003
+    nome: Roupas
+    descricao: Vestuário em geral
+    ativa: true
+
+# Usuários de Teste
+usuarios:
+  - id: 650e8400-e29b-41d4-a716-446655440001
+    nome: João Silva
+    email: joao.silva@example.com
+    senha_hash: $2b$10$N9qo8uLOickgx2ZMRZoMye7FRNpZeS0eNXxGglxmCJ0qAB9ljyeiu # senha: teste123
+    cpf: "123.456.789-00"
+    data_nascimento: 1990-05-15
+    ativo: true
+
+  - id: 650e8400-e29b-41d4-a716-446655440002
+    nome: Maria Santos
+    email: maria.santos@example.com
+    senha_hash: $2b$10$N9qo8uLOickgx2ZMRZoMye7FRNpZeS0eNXxGglxmCJ0qAB9ljyeiu
+    cpf: "987.654.321-00"
+    data_nascimento: 1985-08-20
+    ativo: true
+
+  - id: 650e8400-e29b-41d4-a716-446655440003
+    nome: Admin Teste
+    email: admin@example.com
+    senha_hash: $2b$10$N9qo8uLOickgx2ZMRZoMye7FRNpZeS0eNXxGglxmCJ0qAB9ljyeiu
+    ativo: true
+
+# Endereços
+enderecos:
+  - id: 750e8400-e29b-41d4-a716-446655440001
+    usuario_id: 650e8400-e29b-41d4-a716-446655440001
+    nome: Casa
+    cep: "01310-100"
+    logradouro: Avenida Paulista
+    numero: "1000"
+    complemento: Apto 101
+    bairro: Bela Vista
+    cidade: São Paulo
+    estado: SP
+    padrao: true
+
+  - id: 750e8400-e29b-41d4-a716-446655440002
+    usuario_id: 650e8400-e29b-41d4-a716-446655440001
+    nome: Trabalho
+    cep: "04542-000"
+    logradouro: Avenida Brigadeiro Faria Lima
+    numero: "2000"
+    bairro: Itaim Bibi
+    cidade: São Paulo
+    estado: SP
+    padrao: false
+
+  - id: 750e8400-e29b-41d4-a716-446655440003
+    usuario_id: 650e8400-e29b-41d4-a716-446655440002
+    nome: Residência
+    cep: "22041-001"
+    logradouro: Avenida Atlântica
+    numero: "1500"
+    bairro: Copacabana
+    cidade: Rio de Janeiro
+    estado: RJ
+    padrao: true
+
+# Produtos
+produtos:
+  - id: 850e8400-e29b-41d4-a716-446655440001
+    categoria_id: 550e8400-e29b-41d4-a716-446655440001
+    nome: Notebook Dell Inspiron 15
+    slug: notebook-dell-inspiron-15
+    descricao: Notebook com processador Intel Core i5, 8GB RAM, 256GB SSD
+    preco: 3499.90
+    estoque: 15
+    ativo: true
+
+  - id: 850e8400-e29b-41d4-a716-446655440002
+    categoria_id: 550e8400-e29b-41d4-a716-446655440001
+    nome: Mouse Logitech MX Master 3
+    slug: mouse-logitech-mx-master-3
+    descricao: Mouse sem fio com sensor de alta precisão
+    preco: 599.90
+    estoque: 50
+    ativo: true
+
+  - id: 850e8400-e29b-41d4-a716-446655440003
+    categoria_id: 550e8400-e29b-41d4-a716-446655440002
+    nome: Clean Code - Robert Martin
+    slug: clean-code-robert-martin
+    descricao: Livro sobre boas práticas de programação
+    preco: 89.90
+    estoque: 30
+    ativo: true
+
+  - id: 850e8400-e29b-41d4-a716-446655440004
+    categoria_id: 550e8400-e29b-41d4-a716-446655440003
+    nome: Camiseta Básica Preta
+    slug: camiseta-basica-preta
+    descricao: Camiseta 100% algodão, tamanho M
+    preco: 49.90
+    estoque: 100
+    ativo: true
+
+# Pedidos de Exemplo
+pedidos:
+  - id: 950e8400-e29b-41d4-a716-446655440001
+    usuario_id: 650e8400-e29b-41d4-a716-446655440001
+    endereco_id: 750e8400-e29b-41d4-a716-446655440001
+    numero_pedido: PED-2024-00001
+    status: entregue
+    subtotal: 4099.80
+    desconto: 100.00
+    frete: 50.00
+    total: 4049.80
+    criado_em: 2024-11-01 10:30:00
+
+  - id: 950e8400-e29b-41d4-a716-446655440002
+    usuario_id: 650e8400-e29b-41d4-a716-446655440002
+    endereco_id: 750e8400-e29b-41d4-a716-446655440003
+    numero_pedido: PED-2024-00002
+    status: enviado
+    subtotal: 89.90
+    desconto: 0
+    frete: 15.00
+    total: 104.90
+    criado_em: 2024-11-05 14:20:00
+
+# Itens dos Pedidos
+itens_pedido:
+  - pedido_id: 950e8400-e29b-41d4-a716-446655440001
+    produto_id: 850e8400-e29b-41d4-a716-446655440001
+    quantidade: 1
+    preco_unitario: 3499.90
+    subtotal: 3499.90
+
+  - pedido_id: 950e8400-e29b-41d4-a716-446655440001
+    produto_id: 850e8400-e29b-41d4-a716-446655440002
+    quantidade: 1
+    preco_unitario: 599.90
+    subtotal: 599.90
+
+  - pedido_id: 950e8400-e29b-41d4-a716-446655440002
+    produto_id: 850e8400-e29b-41d4-a716-446655440003
+    quantidade: 1
+    preco_unitario: 89.90
+    subtotal: 89.90
+
