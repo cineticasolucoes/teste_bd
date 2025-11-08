@@ -98,7 +98,7 @@ entities:
         type: varchar
         length: 100
         nullable: false
-        description: Nome do endereço (ex: Casa, Trabalho)
+        description: "Nome do endereço (ex: Casa, Trabalho)"
       
       cep:
         type: varchar
@@ -267,7 +267,7 @@ entities:
         length: 20
         nullable: false
         unique: true
-        description: Número único do pedido (ex: PED-2024-00001)
+        description: "Número único do pedido (ex: PED-2024-00001)"
       
       status:
         type: varchar
