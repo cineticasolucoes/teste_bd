@@ -1,420 +1,343 @@
-# Database Schema - E-commerce Simplificado
-# Versão: 1.0.0
-# Data: 2024-11-07
-
 metadata:
   name: ecommerce_db
-  version: "1.0.0"
+  version: 1.0.0
   database: postgresql
   description: Sistema simples de e-commerce
   author: Mova Design
-
-# Definição das Entidades (Tabelas)
-entities:
-  
-  # Tabela de Usuários
-  Usuario:
-    description: Armazena informações dos usuários do sistema
-    fields:
-      id:
-        type: uuid
-        primaryKey: true
-        nullable: false
-        description: Identificador único do usuário
-      
-      nome:
-        type: varchar
-        length: 255
-        nullable: false
-        description: Nome completo do usuário
-      
-      email:
-        type: varchar
-        length: 255
-        nullable: false
-        unique: true
-        description: Email único para login
-      
-      senha_hash:
-        type: varchar
-        length: 255
-        nullable: false
-        description: Hash da senha (bcrypt)
-      
-      cpf:
-        type: varchar
-        length: 14
-        nullable: true
-        unique: true
-        description: "CPF do usuário (formato: XXX.XXX.XXX-XX)"
-      
-      data_nascimento:
-        type: date
-        nullable: true
-      
-      ativo:
-        type: boolean
-        nullable: false
-        default: true
-        description: Indica se o usuário está ativo
-      
-      criado_em:
-        type: timestamp
-        nullable: false
-        default: now()
-      
-      atualizado_em:
-        type: timestamp
-        nullable: false
-        default: now()
-    
-    indexes:
-      - name: idx_usuario_email
-        fields: [email]
-        unique: true
-      
-      - name: idx_usuario_cpf
-        fields: [cpf]
-        unique: true
-        where: "cpf IS NOT NULL"
-
-  # Tabela de Endereços
-  Endereco:
-    description: Endereços de entrega dos usuários
-    fields:
-      id:
-        type: uuid
-        primaryKey: true
-        nullable: false
-      
-      usuario_id:
-        type: uuid
-        nullable: false
-        foreignKey:
-          references: Usuario.id
-          onDelete: cascade
-      
-      nome:
-        type: varchar
-        length: 100
-        nullable: false
-        description: "Nome do endereço (ex: Casa, Trabalho)"
-      
-      cep:
-        type: varchar
-        length: 9
-        nullable: false
-      
-      logradouro:
-        type: varchar
-        length: 255
-        nullable: false
-      
-      numero:
-        type: varchar
-        length: 20
-        nullable: false
-      
-      complemento:
-        type: varchar
-        length: 255
-        nullable: true
-      
-      bairro:
-        type: varchar
-        length: 100
-        nullable: false
-      
-      cidade:
-        type: varchar
-        length: 100
-        nullable: false
-      
-      estado:
-        type: varchar
-        length: 2
-        nullable: false
-      
-      padrao:
-        type: boolean
-        nullable: false
-        default: false
-        description: Indica se é o endereço padrão
-      
-      criado_em:
-        type: timestamp
-        nullable: false
-        default: now()
-    
-    indexes:
-      - name: idx_endereco_usuario
-        fields: [usuario_id]
-
-  # Tabela de Categorias de Produtos
-  Categoria:
-    description: Categorias de produtos
-    fields:
-      id:
-        type: uuid
-        primaryKey: true
-        nullable: false
-      
-      nome:
-        type: varchar
-        length: 100
-        nullable: false
-        unique: true
-      
-      descricao:
-        type: text
-        nullable: true
-      
-      ativa:
-        type: boolean
-        nullable: false
-        default: true
-      
-      criado_em:
-        type: timestamp
-        nullable: false
-        default: now()
-
-  # Tabela de Produtos
-  Produto:
-    description: Produtos disponíveis para venda
-    fields:
-      id:
-        type: uuid
-        primaryKey: true
-        nullable: false
-      
-      categoria_id:
-        type: uuid
-        nullable: false
-        foreignKey:
-          references: Categoria.id
-          onDelete: restrict
-      
-      nome:
-        type: varchar
-        length: 255
-        nullable: false
-      
-      descricao:
-        type: text
-        nullable: true
-      
-      preco:
-        type: decimal
-        precision: 10
-        scale: 2
-        nullable: false
-        description: Preço em reais
-      
-      estoque:
-        type: integer
-        nullable: false
-        default: 0
-        description: Quantidade disponível em estoque
-      
-      ativo:
-        type: boolean
-        nullable: false
-        default: true
-      
-      criado_em:
-        type: timestamp
-        nullable: false
-        default: now()
-      
-      atualizado_em:
-        type: timestamp
-        nullable: false
-        default: now()
-    
-    indexes:
-      - name: idx_produto_categoria
-        fields: [categoria_id]
-      
-      - name: idx_produto_ativo
-        fields: [ativo]
-
-  # Tabela de Pedidos
-  Pedido:
-    description: Pedidos realizados pelos usuários
-    fields:
-      id:
-        type: uuid
-        primaryKey: true
-        nullable: false
-      
-      usuario_id:
-        type: uuid
-        nullable: false
-        foreignKey:
-          references: Usuario.id
-          onDelete: restrict
-      
-      endereco_id:
-        type: uuid
-        nullable: false
-        foreignKey:
-          references: Endereco.id
-          onDelete: restrict
-      
-      numero_pedido:
-        type: varchar
-        length: 20
-        nullable: false
-        unique: true
-        description: "Número único do pedido (ex: PED-2024-00001)"
-      
-      status:
-        type: varchar
-        length: 50
-        nullable: false
-        default: "pendente"
-        description: "Status: pendente, pago, separado, enviado, entregue, cancelado"
-      
-      subtotal:
-        type: decimal
-        precision: 10
-        scale: 2
-        nullable: false
-      
-      desconto:
-        type: decimal
-        precision: 10
-        scale: 2
-        nullable: false
-        default: 0
-      
-      frete:
-        type: decimal
-        precision: 10
-        scale: 2
-        nullable: false
-        default: 0
-      
-      total:
-        type: decimal
-        precision: 10
-        scale: 2
-        nullable: false
-      
-      criado_em:
-        type: timestamp
-        nullable: false
-        default: now()
-      
-      atualizado_em:
-        type: timestamp
-        nullable: false
-        default: now()
-    
-    indexes:
-      - name: idx_pedido_usuario
-        fields: [usuario_id]
-      
-      - name: idx_pedido_numero
-        fields: [numero_pedido]
-        unique: true
-      
-      - name: idx_pedido_status
-        fields: [status]
-      
-      - name: idx_pedido_criado
-        fields: [criado_em]
-
-  # Tabela de Itens do Pedido
-  ItemPedido:
-    description: Itens que compõem cada pedido
-    fields:
-      id:
-        type: uuid
-        primaryKey: true
-        nullable: false
-      
-      pedido_id:
-        type: uuid
-        nullable: false
-        foreignKey:
-          references: Pedido.id
-          onDelete: cascade
-      
-      produto_id:
-        type: uuid
-        nullable: false
-        foreignKey:
-          references: Produto.id
-          onDelete: restrict
-      
-      quantidade:
-        type: integer
-        nullable: false
-        description: Quantidade comprada
-      
-      preco_unitario:
-        type: decimal
-        precision: 10
-        scale: 2
-        nullable: false
-        description: Preço do produto no momento da compra
-      
-      subtotal:
-        type: decimal
-        precision: 10
-        scale: 2
-        nullable: false
-        description: quantidade * preco_unitario
-      
-      criado_em:
-        type: timestamp
-        nullable: false
-        default: now()
-    
-    indexes:
-      - name: idx_item_pedido
-        fields: [pedido_id]
-      
-      - name: idx_item_produto
-        fields: [produto_id]
-
-# Relacionamentos entre as tabelas
+tables:
+- name: Usuario
+  description: Armazena informações dos usuários do sistema
+  columns:
+  - name: id
+    type: uuid
+    primaryKey: true
+    nullable: false
+    description: Identificador único do usuário
+  - name: nome
+    type: varchar
+    length: 255
+    nullable: false
+    description: Nome completo do usuário
+  - name: email
+    type: varchar
+    length: 255
+    nullable: false
+    unique: true
+    description: Email único para login
+  - name: senha_hash
+    type: varchar
+    length: 255
+    nullable: false
+    description: Hash da senha (bcrypt)
+  - name: cpf
+    type: varchar
+    length: 14
+    unique: true
+    description: 'CPF do usuário (formato: XXX.XXX.XXX-XX)'
+  - name: data_nascimento
+    type: date
+  - name: ativo
+    type: boolean
+    nullable: false
+    default: true
+    description: Indica se o usuário está ativo
+  - name: criado_em
+    type: timestamp
+    nullable: false
+    default: now()
+  - name: atualizado_em
+    type: timestamp
+    nullable: false
+    default: now()
+  indexes:
+  - name: idx_usuario_email
+    columns:
+    - email
+    unique: true
+  - name: idx_usuario_cpf
+    columns:
+    - cpf
+    unique: true
+    where: cpf IS NOT NULL
+- name: Endereco
+  description: Endereços de entrega dos usuários
+  columns:
+  - name: id
+    type: uuid
+    primaryKey: true
+    nullable: false
+  - name: usuario_id
+    type: uuid
+    nullable: false
+    foreignKey:
+      references: Usuario.id
+      onDelete: cascade
+  - name: nome
+    type: varchar
+    length: 100
+    nullable: false
+    description: 'Nome do endereço (ex: Casa, Trabalho)'
+  - name: cep
+    type: varchar
+    length: 9
+    nullable: false
+  - name: logradouro
+    type: varchar
+    length: 255
+    nullable: false
+  - name: numero
+    type: varchar
+    length: 20
+    nullable: false
+  - name: complemento
+    type: varchar
+    length: 255
+  - name: bairro
+    type: varchar
+    length: 100
+    nullable: false
+  - name: cidade
+    type: varchar
+    length: 100
+    nullable: false
+  - name: estado
+    type: varchar
+    length: 2
+    nullable: false
+  - name: padrao
+    type: boolean
+    nullable: false
+    default: false
+    description: Indica se é o endereço padrão
+  - name: criado_em
+    type: timestamp
+    nullable: false
+    default: now()
+  indexes:
+  - name: idx_endereco_usuario
+    columns: 
+    - usuario_id
+- name: Categoria
+  description: Categorias de produtos
+  columns:
+  - name: id
+    type: uuid
+    primaryKey: true
+    nullable: false
+  - name: nome
+    type: varchar
+    length: 100
+    nullable: false
+    unique: true
+  - name: descricao
+    type: text
+  - name: ativa
+    type: boolean
+    nullable: false
+    default: true
+  - name: criado_em
+    type: timestamp
+    nullable: false
+    default: now()
+- name: Produto
+  description: Produtos disponíveis para venda
+  columns:
+  - name: id
+    type: uuid
+    primaryKey: true
+    nullable: false
+  - name: categoria_id
+    type: uuid
+    nullable: false
+    foreignKey:
+      references: Categoria.id
+      onDelete: restrict
+  - name: nome
+    type: varchar
+    length: 255
+    nullable: false
+  - name: descricao
+    type: text
+  - name: preco
+    type: decimal
+    precision: 10
+    scale: 2
+    nullable: false
+    description: Preço em reais
+  - name: estoque
+    type: integer
+    nullable: false
+    default: 0
+    description: Quantidade disponível em estoque
+  - name: ativo
+    type: boolean
+    nullable: false
+    default: true
+  - name: criado_em
+    type: timestamp
+    nullable: false
+    default: now()
+  - name: atualizado_em
+    type: timestamp
+    nullable: false
+    default: now()
+  indexes:
+  - name: idx_produto_categoria
+    columns:
+    - categoria_id
+  - name: idx_produto_ativo
+    columns:
+    - ativo
+- name: Pedido
+  description: Pedidos realizados pelos usuários
+  columns:
+  - name: id
+    type: uuid
+    primaryKey: true
+    nullable: false
+  - name: usuario_id
+    type: uuid
+    nullable: false
+    foreignKey:
+      references: Usuario.id
+      onDelete: restrict
+  - name: endereco_id
+    type: uuid
+    nullable: false
+    foreignKey:
+      references: Endereco.id
+      onDelete: restrict
+  - name: numero_pedido
+    type: varchar
+    length: 20
+    nullable: false
+    unique: true
+    description: 'Número único do pedido (ex: PED-2024-00001)'
+  - name: status
+    type: varchar
+    length: 50
+    nullable: false
+    default: pendente
+    description: 'Status: pendente, pago, separado, enviado, entregue, cancelado'
+  - name: subtotal
+    type: decimal
+    precision: 10
+    scale: 2
+    nullable: false
+  - name: desconto
+    type: decimal
+    precision: 10
+    scale: 2
+    nullable: false
+    default: 0
+  - name: frete
+    type: decimal
+    precision: 10
+    scale: 2
+    nullable: false
+    default: 0
+  - name: total
+    type: decimal
+    precision: 10
+    scale: 2
+    nullable: false
+  - name: criado_em
+    type: timestamp
+    nullable: false
+    default: now()
+  - name: atualizado_em
+    type: timestamp
+    nullable: false
+    default: now()
+  indexes:
+  - name: idx_pedido_usuario
+    columns:
+    - usuario_id
+  - name: idx_pedido_numero
+    columns:
+    - numero_pedido
+    unique: true
+  - name: idx_pedido_status
+    columns:
+    - status
+  - name: idx_pedido_criado
+    columns:
+    - criado_em
+- name: ItemPedido
+  description: Itens que compõem cada pedido
+  columns:
+  - name: id
+    type: uuid
+    primaryKey: true
+    nullable: false
+  - name: pedido_id
+    type: uuid
+    nullable: false
+    foreignKey:
+      references: Pedido.id
+      onDelete: cascade
+  - name: produto_id
+    type: uuid
+    nullable: false
+    foreignKey:
+      references: Produto.id
+      onDelete: restrict
+  - name: quantidade
+    type: integer
+    nullable: false
+    description: Quantidade comprada
+  - name: preco_unitario
+    type: decimal
+    precision: 10
+    scale: 2
+    nullable: false
+    description: Preço do produto no momento da compra
+  - name: subtotal
+    type: decimal
+    precision: 10
+    scale: 2
+    nullable: false
+    description: quantidade * preco_unitario
+  - name: criado_em
+    type: timestamp
+    nullable: false
+    default: now()
+  indexes:
+  - name: idx_item_pedido
+    columns:
+    - pedido_id
+  - name: idx_item_produto
+    columns:
+    - produto_id
 relationships:
-  - name: usuario_enderecos
-    type: one-to-many
-    from: Usuario.id
-    to: Endereco.usuario_id
-    description: Um usuário pode ter múltiplos endereços
-  
-  - name: usuario_pedidos
-    type: one-to-many
-    from: Usuario.id
-    to: Pedido.usuario_id
-    description: Um usuário pode fazer múltiplos pedidos
-  
-  - name: categoria_produtos
-    type: one-to-many
-    from: Categoria.id
-    to: Produto.categoria_id
-    description: Uma categoria pode ter múltiplos produtos
-  
-  - name: pedido_endereco
-    type: many-to-one
-    from: Pedido.endereco_id
-    to: Endereco.id
-    description: Cada pedido é entregue em um endereço
-  
-  - name: pedido_itens
-    type: one-to-many
-    from: Pedido.id
-    to: ItemPedido.pedido_id
-    description: Um pedido pode ter múltiplos itens
-  
-  - name: produto_itens
-    type: one-to-many
-    from: Produto.id
-    to: ItemPedido.produto_id
-    description: Um produto pode estar em múltiplos pedidos
-
+- name: usuario_enderecos
+  type: one-to-many
+  from: Usuario.id
+  to: Endereco.usuario_id
+  description: Um usuário pode ter múltiplos endereços
+- name: usuario_pedidos
+  type: one-to-many
+  from: Usuario.id
+  to: Pedido.usuario_id
+  description: Um usuário pode fazer múltiplos pedidos
+- name: categoria_produtos
+  type: one-to-many
+  from: Categoria.id
+  to: Produto.categoria_id
+  description: Uma categoria pode ter múltiplos produtos
+- name: pedido_endereco
+  type: many-to-one
+  from: Pedido.endereco_id
+  to: Endereco.id
+  description: Cada pedido é entregue em um endereço
+- name: pedido_itens
+  type: one-to-many
+  from: Pedido.id
+  to: ItemPedido.pedido_id
+  description: Um pedido pode ter múltiplos itens
+- name: produto_itens
+  type: one-to-many
+  from: Produto.id
+  to: ItemPedido.produto_id
+  description: Um produto pode estar em múltiplos pedidos
+...

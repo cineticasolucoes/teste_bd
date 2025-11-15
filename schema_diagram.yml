@@ -1,0 +1,22 @@
+layout:
+  diagram:
+    positions:
+      Usuario:
+        x: 133
+        y: 50
+      Endereco:
+        x: 50
+        y: 750
+      Categoria:
+        x: 575
+        y: 50
+      Produto:
+        x: 575
+        y: 400
+      Pedido:
+        x: 225
+        y: 400
+      ItemPedido:
+        x: 565
+        y: 750
+  views: {}
